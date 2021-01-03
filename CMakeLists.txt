@@ -3,7 +3,7 @@ project(cbpro++ LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 # temporary
-set(CMAKE_INSTALL_INCLUDEDIR "/Users/bradleybottomlee/output/include/")
+set(CMAKE_INSTALL_INCLUDEDIR "/home/bbottoml/output/include/")
 
 # find files
 file(GLOB cbpro++_PUBLIC_HEADERS include/cbpro++/*)
@@ -18,7 +18,7 @@ find_package(spdlog REQUIRED)
 add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS} include/cbpro++/Auth.h)
 
 target_link_libraries(cbpro++ PRIVATE spdlog::spdlog)
-target_include_directories(cbpro++ PRIVATE SYSTEM ${CMAKE_SOURCE_DIR}/beast/include
+target_include_directories(cbpro++ PRIVATE SYSTEM ${CMAKE_SOURCE_DIR}/install/boost_1_66_0
         ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS})
 
 target_include_directories(
