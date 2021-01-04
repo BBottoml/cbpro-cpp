@@ -1,5 +1,4 @@
 .idea/
 run.sh
 cmake-build-debug/
-beast/
 install/

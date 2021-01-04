@@ -18,6 +18,7 @@ find_package(spdlog REQUIRED)
 add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS} include/cbpro++/Auth.h)
 
 target_link_libraries(cbpro++ PRIVATE spdlog::spdlog)
+# TODO: Suppress Beast compliation warnings
 target_include_directories(cbpro++ PRIVATE SYSTEM ${CMAKE_SOURCE_DIR}/install/boost_1_66_0
         ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS})
 
