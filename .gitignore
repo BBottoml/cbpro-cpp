@@ -2,3 +2,4 @@
 run.sh
 cmake-build-debug/
 install/
+output/
