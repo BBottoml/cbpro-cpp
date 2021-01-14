@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "HttpClient.h"
+#include "root_certificates.hpp"
 
 HttpClient::HttpClient() = default;
 
@@ -16,21 +17,41 @@ pt::ptree HttpClient::makeRequest(std::string endpoint, HttpClient::RequestType,
 pt::ptree HttpClient::makeRequest(const std::string &target, HttpClient::RequestType) {
     try {
         auto const host = "api-public.sandbox.pro.coinbase.com";
-        auto const port = "80";
+        auto const port = "443";
         int version = 11;
 
-        // The io_context is required for all I/O
+
         net::io_context ioc;
+
+        // The SSL context is required, and holds certificates
+        ssl::context ctx(ssl::context::tlsv12_client);
+
+        // This holds the root certificate used for verification
+        load_root_certificates(ctx);
+
+        // Verify the remote server's certificate
+        ctx.set_verify_mode(ssl::verify_peer);
 
         // These objects perform our I/O
         tcp::resolver resolver(ioc);
-        beast::tcp_stream stream(ioc);
+        beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx);
+
+        // Set SNI Hostname (many hosts need this to handshake successfully)
+        if(! SSL_set_tlsext_host_name(stream.native_handle(), host))
+        {
+            //beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
+            //throw beast::system_error{ec};
+            std::cerr << "SNI hostname could not be set correctly" << std::endl;
+        }
 
         // Look up the domain name
         auto const results = resolver.resolve(host, port);
 
         // Make the connection on the IP address we get from a lookup
-        stream.connect(results);
+        beast::get_lowest_layer(stream).connect(results);
+
+        // Perform the SSL handshake
+        stream.handshake(ssl::stream_base::client);
 
         // Set up an HTTP GET request message
         http::request<http::string_body> req{http::verb::get, target, version};
@@ -52,19 +73,22 @@ pt::ptree HttpClient::makeRequest(const std::string &target, HttpClient::Request
         // Write the message to standard out
         std::cout << res << std::endl;
 
-        // Gracefully close the socket
+        // Gracefully close the stream
         beast::error_code ec;
-        stream.socket().shutdown(tcp::socket::shutdown_both, ec);
-
-        // not_connected happens sometimes
-        // so don't bother reporting it.
-        //
-        if (ec && ec != beast::errc::not_connected)
+        stream.shutdown(ec);
+        if(ec == net::error::eof)
+        {
+            // Rationale:
+            // http://stackoverflow.com/questions/25587403/boost-asio-ssl-async-shutdown-always-finishes-with-an-error
+            ec = {};
+        }
+        if(ec)
             throw beast::system_error{ec};
 
         // If we get here then the connection is closed gracefully
     }
-    catch (std::exception const &e) {
+    catch(std::exception const& e)
+    {
         std::cerr << "Error: " << e.what() << std::endl;
     }
 }

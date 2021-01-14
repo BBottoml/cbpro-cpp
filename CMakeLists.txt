@@ -14,14 +14,17 @@ file(GLOB cbpro++_SOURCES src/*.cpp src/util/*.cpp)
 
 # dependency handling
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/install)
-find_package(Threads REQUIRED)
+
 find_package(spdlog REQUIRED)
+find_package(Threads REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
 
-add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS})
+add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS} src/util/root_certificates.hpp)
 
-target_link_libraries(cbpro++ PRIVATE spdlog::spdlog)
-target_include_directories(cbpro++ PRIVATE SYSTEM ${CMAKE_SOURCE_DIR}/install/boost_1_72_0
-        ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS})
+target_link_libraries(cbpro++ PRIVATE spdlog::spdlog ${Boost_SYSTEM_LIBRARY})
+target_include_directories(cbpro++ PRIVATE SYSTEM
+        ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS} ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
 target_include_directories(
         cbpro++
@@ -38,3 +41,25 @@ install(TARGETS cbpro++
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/
         )
+
+configure_file("cmake/cbpro++-config.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/cbpro++-config.cmake" @ONLY)
+
+install(
+        EXPORT cbpro++_export
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/cbpro++"
+        NAMESPACE "cbpro++::"
+        # In this CMake config file no dependencies are considered. But since we
+        # do not use any `find_package` call here this approach is sufficient.
+        FILE cbpro++-targets.cmake
+)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/cbpro++-config.cmake"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/cbpro++")
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CBPro++")
+SET(CPACK_PACKAGE_VENDOR "BBottoml")
+SET(CPACK_PACKAGE_VERSION "1.0.0")
+SET(CPACK_GENERATOR "RPM;DEB")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Nobody")
+INCLUDE(CPack)
