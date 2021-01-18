@@ -2,13 +2,10 @@
 // Created by Bradley Bottomlee on 1/1/21.
 //
 
+#include <string>
+
 #ifndef CBPRO_AUTH_H
 #define CBPRO_AUTH_H
-
-#endif //CBPRO_AUTH_H
-
-#include <string>
-#include <boost/beast.hpp>
 
 class Auth {
 private:
@@ -18,11 +15,13 @@ private:
 
 
 public:
-    Auth(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase);
+    Auth(const std::string &, const std::string &, const std::string &);
 
-    const std::string &getApiKey() const;
+    [[nodiscard]] const std::string &getApiKey() const;
 
-    const std::string &getApiSecret() const;
+    [[nodiscard]] const std::string &getApiSecret() const;
 
-    const std::string &getPassphrase() const;
+    [[nodiscard]] const std::string &getPassphrase() const;
 };
+
+#endif //CBPRO_AUTH_H
