@@ -3,11 +3,22 @@
 //
 
 #include <iostream>
-#include "HttpClient.h"
+#include <unordered_map>
 
-HttpClient::HttpClient() = default;
+#include "httpclient.h"
+
+HttpClient::HttpClient(const std::string &host, const std::string &port) : host(host), port(port) {
+    version = 11;
+
+    ctx = std::make_shared<ssl::context>(ssl::context::sslv23);
+    ioc = std::make_shared<net::io_context>();
+    ctx->set_default_verify_paths();
+
+    resolver = std::make_shared<tcp::resolver>((*ioc));
+}
 
 HttpClient::~HttpClient() = default;
+
 
 pt::ptree
 HttpClient::makeRequest(const std::string &target, const std::string &body, Auth &auth, HttpClient::RequestVerb rv) {
@@ -21,25 +32,18 @@ HttpClient::makeRequest(const std::string &target, const std::string &body, Auth
 pt::ptree
 HttpClient::makeRequest(const std::string &target) {
     try {
-        auto const host = "api-public.sandbox.pro.coinbase.com";
-        auto const port = "443";
-        int version = 11;
 
-        net::io_context ioc;
+        beast::ssl_stream<beast::tcp_stream> stream(*ioc, *ctx);
 
-        ssl::context ctx(ssl::context::sslv23);
-        ctx.set_default_verify_paths();
-
-        tcp::resolver resolver(ioc);
-        beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx);
-
-        if (!SSL_set_tlsext_host_name(stream.native_handle(), host)) {
+        auto const hostName = host.c_str();
+        if (!SSL_set_tlsext_host_name(stream.native_handle(), hostName)) {
             //beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
             //throw beast::system_error{ec};
             std::cerr << "SNI hostname could not be set correctly" << std::endl;
         }
 
-        auto const results = resolver.resolve(host, port);
+        // TODO: Make results member of HttpClient
+        auto const results = resolver->resolve(host, port);
 
         beast::get_lowest_layer(stream).connect(results);
 
@@ -56,8 +60,6 @@ HttpClient::makeRequest(const std::string &target) {
         http::response<http::dynamic_body> res;
 
         http::read(stream, buffer, res);
-
-        std::cout << res << std::endl;
 
         std::stringstream ss;
         ss << std::string(boost::asio::buffers_begin(res.body().data()),

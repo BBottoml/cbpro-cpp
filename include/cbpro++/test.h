@@ -2,7 +2,7 @@
 // Created by Bradley Bottomlee on 1/7/21.
 //
 
-#include "Auth.h"
+#include "auth.h"
 
 #ifndef CBPRO_TEST_H
 #define CBPRO_TEST_H

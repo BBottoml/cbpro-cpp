@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 # Add support for find_package command and further general lib installation
 
 # find files
-file(GLOB cbpro++_PUBLIC_HEADERS include/cbpro++/*)
-file(GLOB cbpro++_PRIVATE_HEADERS src/*.hpp src/util/*.hpp)
+file(GLOB_RECURSE cbpro++_PUBLIC_HEADERS include/cbpro++/*)
+file(GLOB_RECURSE cbpro++_PRIVATE_HEADERS src/*.hpp)
 file(GLOB cbpro++_SOURCES src/*.cpp src/util/*.cpp)
 
 # dependency handling
@@ -24,7 +24,7 @@ find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED)
 
-add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS} src/util/Base64.h)
+add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS} src/util/Base64.h include/cbpro++/marketdata/products.h src/marketdata/products.cpp src/marketdata/currencies.cpp include/cbpro++/marketdata/currencies.h src/responses/product.cpp include/cbpro++/responses/product.h src/responses/product.cpp)
 
 target_link_libraries(cbpro++ PRIVATE spdlog::spdlog OpenSSL::SSL OpenSSL::Crypto ${BOOST_INCLUDE_LIBS})
 target_include_directories(cbpro++ PRIVATE SYSTEM
@@ -36,7 +36,7 @@ target_include_directories(
         "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>")
 
-target_compile_options(cbpro++ PRIVATE -Wall -Wextra)
+#target_compile_options(cbpro++ PRIVATE -Wall)
 
 install(FILES ${cbpro++_PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/cbpro++)
 install(TARGETS cbpro++

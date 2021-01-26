@@ -2,7 +2,7 @@
 // Created by Bradley Bottomlee on 12/21/20.
 //
 
-#include <cbpro++/Auth.h>
+#include <cbpro++/auth.h>
 
 Auth::Auth(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase) : apiKey(apiKey),
                                                                                                      apiSecret(

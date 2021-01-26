@@ -2,7 +2,7 @@
 // Created by Bradley Bottomlee on 1/4/21.
 //
 
-#include <cbpro++/Auth.h>
+#include <cbpro++/auth.h>
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -34,7 +34,7 @@ namespace pt = boost::property_tree;
 
 class HttpClient {
 public:
-    HttpClient();
+    HttpClient(const std::string &host, const std::string &port);
 
     ~HttpClient();
 
@@ -46,10 +46,19 @@ public:
     pt::ptree makeRequest(const std::string &target, const std::string &body, Auth &, HttpClient::RequestVerb);
 
 private:
+    std::shared_ptr<net::io_context> ioc;
+    std::shared_ptr<ssl::context> ctx;
+    std::shared_ptr<tcp::resolver> resolver;
+    // std::shared_ptr<beast::ssl_stream<beast::tcp_stream>> stream;
+
+    //const std::string &results;
+    const std::string &host;
+    const std::string &port;
+    int version;
+
     std::string createSignature(const std::string &target, const std::string &body, Auth &, HttpClient::RequestVerb);
 
-
-
+    
 };
 
 #endif //CBPRO_HTTPCLIENT_H

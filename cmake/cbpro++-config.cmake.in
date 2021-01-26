@@ -6,8 +6,8 @@ include(CMakeFindDependencyMacro)
 find_dependency(Threads REQUIRED)
 
 # temporary
-set(spdlog_DIR "/home/bbottoml/Documents/Projects/coinbasepro-cpp/install/lib/cmake/spdlog")
-#set(OPENSSL_ROOT_DIR "/usr/lib/ssl/")
+set(spdlog_DIR "/Users/bradleybottomlee/Documents/Projects/coinbasepro-cpp/install/lib/cmake/spdlog")
+#set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl/lib")
 # list(INSERT CMAKE_MODULE_PATH 0 "${@PROJECT_NAME@_CURRENT_CONFIG_DIR}/")
 find_dependency(spdlog REQUIRED)
 
