@@ -2,10 +2,11 @@
 // Created by Bradley Bottomlee on 1/7/21.
 //
 
-#include "auth.h"
-
 #ifndef CBPRO_TEST_H
 #define CBPRO_TEST_H
+
+#include "auth.h"
+
 
 class test {
 private:

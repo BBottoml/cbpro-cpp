@@ -7,7 +7,19 @@
 
 #include "httpclient.h"
 
-HttpClient::HttpClient(const std::string &host, const std::string &port) : host(host), port(port) {
+// TODO:
+/***
+ * Refactor HttpClient constructor to take auth object
+ * auth object has enum value (sandbox, live)
+ * simple condition to assign host and port
+ *
+ * i.e., host and port are no longer members of httpclient
+ *
+ * figure out way to store results of resolve once
+ *
+ */
+
+HttpClient::HttpClient(const Auth &auth) : auth(auth) {
     version = 11;
 
     ctx = std::make_shared<ssl::context>(ssl::context::sslv23);
@@ -19,11 +31,17 @@ HttpClient::HttpClient(const std::string &host, const std::string &port) : host(
 
 HttpClient::~HttpClient() = default;
 
+auto HttpClient::resolveResults() {
+    auto const host = auth.getMode() == Auth::Mode::SANDBOX ? "api-public.sandbox.pro.coinbase.com" : "NOT";
+    auto const port = "443";
+
+    return resolver->resolve(host, port);
+}
 
 pt::ptree
-HttpClient::makeRequest(const std::string &target, const std::string &body, Auth &auth, HttpClient::RequestVerb rv) {
+HttpClient::makeRequest(const std::string &target, const std::string &body, HttpClient::RequestVerb rv) {
     auto boostVerb = rv == HttpClient::RequestVerb::GET ? http::verb::get : http::verb::post;
-    auto signature = createSignature(target, body, auth, rv);
+    auto signature = createSignature(target, body, rv);
     std::unordered_map<std::string, std::string> headers; // initialize with expected headers
     // TODO: implement boost calls
     return {};
@@ -35,15 +53,22 @@ HttpClient::makeRequest(const std::string &target) {
 
         beast::ssl_stream<beast::tcp_stream> stream(*ioc, *ctx);
 
-        auto const hostName = host.c_str();
-        if (!SSL_set_tlsext_host_name(stream.native_handle(), hostName)) {
+        auto const host = auth.getMode() == Auth::Mode::SANDBOX ? "api-public.sandbox.pro.coinbase.com" : "NOT";
+        auto const port = "443";
+
+        if (!SSL_set_tlsext_host_name(stream.native_handle(), host)) {
             //beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
             //throw beast::system_error{ec};
             std::cerr << "SNI hostname could not be set correctly" << std::endl;
         }
 
-        // TODO: Make results member of HttpClient
-        auto const results = resolver->resolve(host, port);
+        // TODO: Make results member of HttpClient=
+        //auto const results = resolver->resolve(host, port);
+        tcp::resolver resolver2(*ioc);
+
+        //auto host2 = "api-public.sandbox.pro.coinbase.com";
+        tcp::resolver::query query(tcp::v4(), host, port);
+        auto const results = resolver->resolve(query);
 
         beast::get_lowest_layer(stream).connect(results);
 
@@ -64,6 +89,7 @@ HttpClient::makeRequest(const std::string &target) {
         std::stringstream ss;
         ss << std::string(boost::asio::buffers_begin(res.body().data()),
                           boost::asio::buffers_end(res.body().data()));
+        std::cout << ss.str() << std::endl;
 
         pt::ptree resp;
         pt::read_json(ss, resp);
@@ -92,7 +118,7 @@ HttpClient::makeRequest(const std::string &target) {
     }
 }
 
-std::string HttpClient::createSignature(const std::string &target, const std::string &body, Auth &auth,
+std::string HttpClient::createSignature(const std::string &target, const std::string &body,
                                         HttpClient::RequestVerb rv) {
     std::unordered_map<std::string, std::string> map;
     auto time = makeRequest("/time").get<std::string>(
@@ -106,3 +132,5 @@ std::string HttpClient::createSignature(const std::string &target, const std::st
 
     return std::string();
 }
+
+

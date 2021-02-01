@@ -5,62 +5,62 @@
 #include <string>
 #include <cbpro++/responses/product.h>
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getId() const {
     return id;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getDisplayName() const {
     return displayName;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getBaseCurrency() const {
     return baseCurrency;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getQuoteCurrency() const {
     return quoteCurrency;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getBaseIncrement() const {
     return baseIncrement;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getQuoteIncrement() const {
     return quoteIncrement;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getBaseMinSize() const {
     return baseMinSize;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getBaseMaxSize() const {
     return baseMaxSize;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getMinMarketFunds() const {
     return minMarketFunds;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getMaxMarketFunds() const {
     return maxMarketFunds;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getStatus() const {
     return status;
 }
 
-const std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> &
+const std::string &
 responses::Product::getStatusMessage() const {
     return statusMessage;
 }

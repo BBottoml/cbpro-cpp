@@ -9,10 +9,11 @@
 namespace marketdata {
     namespace products {
 
-        std::vector<responses::Product> getProducts() {
-            HttpClient httpClient("api-public.sandbox.pro.coinbase.com", "443");
-            auto resp = httpClient.makeRequest("/products");
+        std::vector<responses::Product> getProducts(Auth &auth) {
+            //HttpClient httpClient(auth);
+            //auto resp = httpClient.makeRequest("/products");
 
+            /*
             std::vector<responses::Product> products;
             for (auto &product : resp) {
                 std::cout << product.first << std::endl;
@@ -21,8 +22,8 @@ namespace marketdata {
                 auto quoteCurrency = product.second.get<std::string>("quote_currency");
                 //products.emplace_back(baseCurrency, quoteCurrency);
             }
+             */
 
-            return products;
         }
 
     } // namespace products

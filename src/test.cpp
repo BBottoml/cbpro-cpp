@@ -10,11 +10,13 @@
 test::test(Auth &auth) : auth(auth) {};
 
 void test::hitEndpoint() {
-    HttpClient httpClient("api-public.sandbox.pro.coinbase.com", "443");
-    auto resp = httpClient.makeRequest("/products");
+    // HttpClient httpClient();
+    // auto resp = httpClient.makeRequest("/products", auth);
+    /*
     for (auto& product: resp) {
         std::cout << product.second.get<std::string>("id") << std::endl;
     }
+     */
 
     //auto products = marketdata::products::getProducts();
 

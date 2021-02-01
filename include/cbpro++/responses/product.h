@@ -6,6 +6,7 @@
 #define CBPRO_PRODUCT_H
 
 #include <string>
+#include <vector>
 
 namespace responses {
     class Product {
