@@ -9,7 +9,11 @@ Auth::Auth(const std::string &apiKey, const std::string &apiSecret, const std::s
           apiSecret(
                   apiSecret),
           passphrase(
-                  passphrase), mode(mode) {};
+                  passphrase), mode(mode) {
+
+    bool authMode = mode == Auth::Mode::LIVE;
+    httpClientPtr = std::make_shared<HttpClient>(apiKey, apiSecret, passphrase, authMode);
+};
 
 Auth::~Auth() = default;
 
@@ -23,6 +27,10 @@ const std::string &Auth::getApiSecret() const {
 
 const std::string &Auth::getPassphrase() const {
     return passphrase;
+}
+
+const std::shared_ptr<HttpClient> &Auth::getHttpClientPtr() const {
+    return httpClientPtr;
 }
 
 Auth::Mode Auth::getMode() const {

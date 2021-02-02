@@ -10,6 +10,11 @@
 test::test(Auth &auth) : auth(auth) {};
 
 void test::hitEndpoint() {
+    auto httpClient = auth.getHttpClientPtr();
+    auto resp = httpClient->makeRequest("/products");
+    for (auto& product: resp) {
+        std::cout << product.second.get<std::string>("id") << std::endl;
+    }
     // HttpClient httpClient();
     // auto resp = httpClient.makeRequest("/products", auth);
     /*

@@ -4,7 +4,6 @@
 
 #include <cbpro++/marketdata/products.h>
 #include <iostream>
-#include "../util/httpclient.h"
 
 namespace marketdata {
     namespace products {

@@ -7,8 +7,6 @@
 #ifndef CBPRO_HTTPCLIENT_H
 #define CBPRO_HTTPCLIENT_H
 
-#include <cbpro++/auth.h>
-
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/ssl.hpp>
@@ -36,7 +34,7 @@ namespace pt = boost::property_tree;
 
 class HttpClient {
 public:
-    HttpClient(const Auth &auth);
+    HttpClient(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase, bool mode);
 
     ~HttpClient();
 
@@ -44,7 +42,6 @@ public:
         GET, POST, PUT
     }; // scoped enum
 
-    auto resolveResults();
     pt::ptree makeRequest(const std::string &target);
     pt::ptree makeRequest(const std::string &target, const std::string &body, HttpClient::RequestVerb);
 
@@ -52,10 +49,14 @@ private:
     std::shared_ptr<net::io_context> ioc;
     std::shared_ptr<ssl::context> ctx;
     std::shared_ptr<tcp::resolver> resolver;
+    boost::asio::ip::tcp::resolver::results_type results;
     // std::shared_ptr<beast::ssl_stream<beast::tcp_stream>> stream;
 
     //const std::string &results;
-    const Auth &auth;
+    const std::string &apiKey;
+    const std::string &apiSecret;
+    const std::string &passphrase;
+    bool mode;
     int version;
 
     std::string createSignature(const std::string &target, const std::string &body, HttpClient::RequestVerb);

@@ -19,7 +19,9 @@
  *
  */
 
-HttpClient::HttpClient(const Auth &auth) : auth(auth) {
+HttpClient::HttpClient(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase,
+                       bool mode) : apiKey(apiKey),
+                                    apiSecret(apiSecret), passphrase(passphrase), mode(mode) {
     version = 11;
 
     ctx = std::make_shared<ssl::context>(ssl::context::sslv23);
@@ -27,16 +29,13 @@ HttpClient::HttpClient(const Auth &auth) : auth(auth) {
     ctx->set_default_verify_paths();
 
     resolver = std::make_shared<tcp::resolver>((*ioc));
+    auto const host = !mode ? "api-public.sandbox.pro.coinbase.com" : "NOT";
+    auto const port = "443";
+
+    results = resolver->resolve(host, port);
 }
 
 HttpClient::~HttpClient() = default;
-
-auto HttpClient::resolveResults() {
-    auto const host = auth.getMode() == Auth::Mode::SANDBOX ? "api-public.sandbox.pro.coinbase.com" : "NOT";
-    auto const port = "443";
-
-    return resolver->resolve(host, port);
-}
 
 pt::ptree
 HttpClient::makeRequest(const std::string &target, const std::string &body, HttpClient::RequestVerb rv) {
@@ -53,22 +52,13 @@ HttpClient::makeRequest(const std::string &target) {
 
         beast::ssl_stream<beast::tcp_stream> stream(*ioc, *ctx);
 
-        auto const host = auth.getMode() == Auth::Mode::SANDBOX ? "api-public.sandbox.pro.coinbase.com" : "NOT";
-        auto const port = "443";
+        auto const host = !mode ? "api-public.sandbox.pro.coinbase.com" : "NOT";
 
         if (!SSL_set_tlsext_host_name(stream.native_handle(), host)) {
             //beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
             //throw beast::system_error{ec};
             std::cerr << "SNI hostname could not be set correctly" << std::endl;
         }
-
-        // TODO: Make results member of HttpClient=
-        //auto const results = resolver->resolve(host, port);
-        tcp::resolver resolver2(*ioc);
-
-        //auto host2 = "api-public.sandbox.pro.coinbase.com";
-        tcp::resolver::query query(tcp::v4(), host, port);
-        auto const results = resolver->resolve(query);
 
         beast::get_lowest_layer(stream).connect(results);
 
@@ -125,7 +115,7 @@ std::string HttpClient::createSignature(const std::string &target, const std::st
             "epoch");  // json response from time endpoint
     auto message = time + (rv == HttpClient::RequestVerb::GET ? "GET" : "POST") + target + body;
 
-    const std::string &preDecodeSecret = auth.getApiSecret();
+    const std::string &preDecodeSecret = apiSecret;
     std::string postDecodeSecret;
     macaron::Base64::Decode(preDecodeSecret, postDecodeSecret);
 
