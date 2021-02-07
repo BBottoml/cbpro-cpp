@@ -13,8 +13,8 @@
 
 namespace marketdata {
     namespace products {
-        std::vector<responses::Product> getProducts(Auth &auth);
-        //std::unordered_map<std::string, std::string>
+        std::vector<responses::product> getProducts(Auth &auth);
+        responses::product getProduct(Auth &auth, std::string &productId);
     } // namespace products
 } // namespace marketdata
 

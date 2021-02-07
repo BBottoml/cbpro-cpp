@@ -7,18 +7,6 @@
 
 #include "httpclient.h"
 
-// TODO:
-/***
- * Refactor HttpClient constructor to take auth object
- * auth object has enum value (sandbox, live)
- * simple condition to assign host and port
- *
- * i.e., host and port are no longer members of httpclient
- *
- * figure out way to store results of resolve once
- *
- */
-
 HttpClient::HttpClient(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase,
                        bool mode) : apiKey(apiKey),
                                     apiSecret(apiSecret), passphrase(passphrase), mode(mode) {
@@ -79,7 +67,7 @@ HttpClient::makeRequest(const std::string &target) {
         std::stringstream ss;
         ss << std::string(boost::asio::buffers_begin(res.body().data()),
                           boost::asio::buffers_end(res.body().data()));
-        std::cout << ss.str() << std::endl;
+        // std::cout << ss.str() << std::endl;
 
         pt::ptree resp;
         pt::read_json(ss, resp);

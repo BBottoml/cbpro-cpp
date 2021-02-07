@@ -5,78 +5,83 @@
 #include <string>
 #include <cbpro++/responses/product.h>
 
-const std::string &
-responses::Product::getId() const {
-    return id;
-}
+namespace responses {
 
-const std::string &
-responses::Product::getDisplayName() const {
-    return displayName;
-}
+    std::string
+    product::getId() const {
+        return data.get<std::string>("id");
+    }
 
-const std::string &
-responses::Product::getBaseCurrency() const {
-    return baseCurrency;
-}
+    std::string
+    product::getDisplayName() const {
+        return data.get<std::string>("display_name");
+    }
 
-const std::string &
-responses::Product::getQuoteCurrency() const {
-    return quoteCurrency;
-}
+    std::string
+    product::getBaseCurrency() const {
+        return data.get<std::string>("base_currency");
+    }
 
-const std::string &
-responses::Product::getBaseIncrement() const {
-    return baseIncrement;
-}
+    std::string
+    responses::product::getQuoteCurrency() const {
+        return data.get<std::string>("quote_currency");;
+    }
 
-const std::string &
-responses::Product::getQuoteIncrement() const {
-    return quoteIncrement;
-}
+    std::string
+    product::getBaseIncrement() const {
+        return data.get<std::string>("base_increment");
+    }
 
-const std::string &
-responses::Product::getBaseMinSize() const {
-    return baseMinSize;
-}
+    std::string
+    product::getQuoteIncrement() const {
+        return data.get<std::string>("quote_increment");
+    }
 
-const std::string &
-responses::Product::getBaseMaxSize() const {
-    return baseMaxSize;
-}
+    std::string
+    product::getBaseMinSize() const {
+        return data.get<std::string>("base_min_size");
+    }
 
-const std::string &
-responses::Product::getMinMarketFunds() const {
-    return minMarketFunds;
-}
+    std::string
+    product::getBaseMaxSize() const {
+        return data.get<std::string>("base_max_size");
+    }
 
-const std::string &
-responses::Product::getMaxMarketFunds() const {
-    return maxMarketFunds;
-}
+    std::string
+    product::getMinMarketFunds() const {
+        return data.get<std::string>("min_market_funds");
+    }
 
-const std::string &
-responses::Product::getStatus() const {
-    return status;
-}
+    std::string
+    product::getMaxMarketFunds() const {
+        return data.get<std::string>("max_market_funds");
+    }
 
-const std::string &
-responses::Product::getStatusMessage() const {
-    return statusMessage;
-}
+    std::string
+    product::getStatus() const {
+        return data.get<std::string>("status");
+    }
 
-const bool &responses::Product::getCancelOnly() const {
-    return cancelOnly;
-}
+    std::string
+    product::getStatusMessage() const {
+        return data.get<std::string>("status_message");
+    }
 
-const bool &responses::Product::getLimitOnly() const {
-    return limitOnly;
-}
+    bool product::getCancelOnly() const {
+        return data.get<bool>("cancel_only");
+    }
 
-const bool &responses::Product::getPostOnly() const {
-    return postOnly;
-}
+    bool product::getLimitOnly() const {
+        return data.get<bool>("limit_only");
+    }
 
-const bool &responses::Product::getTradingDisabled() const {
-    return tradingDisabled;
+    bool product::getPostOnly() const {
+        return data.get<bool>("post_only");
+    }
+
+    bool product::getTradingDisabled() const {
+        return data.get<bool>("trading_disabled");
+    }
+
+    product::product(const pt::ptree &data) : data(data) {}
 }

@@ -29,15 +29,14 @@ set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(spdlog REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED)
 
 add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS})
 
-target_link_libraries(cbpro++ PRIVATE spdlog::spdlog OpenSSL::SSL OpenSSL::Crypto ${BOOST_INCLUDE_LIBS})
-target_include_directories(cbpro++ PRIVATE SYSTEM ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+target_link_libraries(cbpro++ PRIVATE OpenSSL::SSL OpenSSL::Crypto ${BOOST_INCLUDE_LIBS})
+target_include_directories(cbpro++ PRIVATE SYSTEM ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} })
 
 target_include_directories(
         cbpro++

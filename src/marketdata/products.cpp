@@ -3,26 +3,31 @@
 //
 
 #include <cbpro++/marketdata/products.h>
-#include <iostream>
 
 namespace marketdata {
     namespace products {
 
-        std::vector<responses::Product> getProducts(Auth &auth) {
-            //HttpClient httpClient(auth);
-            //auto resp = httpClient.makeRequest("/products");
+        std::vector<responses::product> getProducts(Auth &auth) {
+            const auto &httpClient = auth.getHttpClientPtr();
+            auto resp = httpClient->makeRequest("/products");
 
-            /*
-            std::vector<responses::Product> products;
-            for (auto &product : resp) {
-                std::cout << product.first << std::endl;
-                //std::cout << product.second.get<std::string>(product.first);
-                auto baseCurrency = product.second.get<std::string>("base_currency");
-                auto quoteCurrency = product.second.get<std::string>("quote_currency");
-                //products.emplace_back(baseCurrency, quoteCurrency);
+            std::vector<responses::product> products;
+            for (const auto &prod : resp) {
+                responses::product product(prod.second);
+                products.push_back(product);
             }
-             */
+            return products;
+        }
 
+        responses::product getProduct(Auth &auth, std::string &productId) {
+            const auto &httpClient = auth.getHttpClientPtr();
+
+            std::string target = "/products/";
+            target += productId;
+            auto resp = httpClient->makeRequest(target);
+
+            responses::product product(resp);
+            return product;
         }
 
     } // namespace products

@@ -7,58 +7,50 @@
 
 #include <string>
 #include <vector>
+#include <boost/property_tree/ptree.hpp>
+
+namespace pt = boost::property_tree;
+
 
 namespace responses {
-    class Product {
-    private:
-        const std::string &id;
-        const std::string &displayName;
-        const std::string &baseCurrency;
-        const std::string &quoteCurrency;
-        const std::string &baseIncrement;
-        const std::string &quoteIncrement;
-        const std::string &baseMinSize;
-        const std::string &baseMaxSize;
-        const std::string &minMarketFunds;
-        const std::string &maxMarketFunds;
-        const std::string &status;
-        const std::string &statusMessage;
-        const bool &cancelOnly;
-        const bool &limitOnly;
-        const bool &postOnly;
-        const bool &tradingDisabled;
+    class product {
     public:
-        [[nodiscard]] const std::string &getId() const;
+        explicit product(const pt::ptree &data);
 
-        [[nodiscard]] const std::string &getDisplayName() const;
+    private:
+        pt::ptree data;
+    public:
+        [[nodiscard]] std::string getId() const;
 
-        [[nodiscard]] const std::string &getBaseCurrency() const;
+        [[nodiscard]] std::string getDisplayName() const;
 
-        [[nodiscard]] const std::string &getQuoteCurrency() const;
+        [[nodiscard]] std::string getBaseCurrency() const;
 
-        [[nodiscard]] const std::string &getBaseIncrement() const;
+        [[nodiscard]] std::string getQuoteCurrency() const;
 
-        [[nodiscard]] const std::string &getQuoteIncrement() const;
+        [[nodiscard]] std::string getBaseIncrement() const;
 
-        [[nodiscard]] const std::string &getBaseMinSize() const;
+        [[nodiscard]] std::string getQuoteIncrement() const;
 
-        [[nodiscard]] const std::string &getBaseMaxSize() const;
+        [[nodiscard]] std::string getBaseMinSize() const;
 
-        [[nodiscard]] const std::string &getMinMarketFunds() const;
+        [[nodiscard]] std::string getBaseMaxSize() const;
 
-        [[nodiscard]] const std::string &getMaxMarketFunds() const;
+        [[nodiscard]] std::string getMinMarketFunds() const;
 
-        [[nodiscard]] const std::string &getStatus() const;
+        [[nodiscard]] std::string getMaxMarketFunds() const;
 
-        [[nodiscard]] const std::string &getStatusMessage() const;
+        [[nodiscard]] std::string getStatus() const;
 
-        [[nodiscard]] const bool &getCancelOnly() const;
+        [[nodiscard]] std::string getStatusMessage() const;
 
-        [[nodiscard]] const bool &getLimitOnly() const;
+        [[nodiscard]] bool getCancelOnly() const;
 
-        [[nodiscard]] const bool &getPostOnly() const;
+        [[nodiscard]] bool getLimitOnly() const;
 
-        [[nodiscard]] const bool &getTradingDisabled() const;
+        [[nodiscard]] bool getPostOnly() const;
+
+        [[nodiscard]] bool getTradingDisabled() const;
     };
 }
 #endif //CBPRO_PRODUCT_H

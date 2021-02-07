@@ -7,13 +7,19 @@
 
 #include <string>
 #include <memory>
+
 #include "../../src/util/httpclient.h"
 
 class Auth {
 public:
+
     enum class Mode {
         SANDBOX, LIVE
     }; // scoped enum
+
+    enum class Logging {
+        CONSOLE,
+    };
 
     Auth(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase, Auth::Mode mode);
 
@@ -36,8 +42,6 @@ private:
     Auth::Mode mode;
 
     std::shared_ptr<HttpClient> httpClientPtr;
-
-
 };
 
 #endif //CBPRO_AUTH_H
