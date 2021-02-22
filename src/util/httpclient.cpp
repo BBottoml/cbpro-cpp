@@ -17,7 +17,7 @@ HttpClient::HttpClient(const std::string &apiKey, const std::string &apiSecret, 
     ctx->set_default_verify_paths();
 
     resolver = std::make_shared<tcp::resolver>((*ioc));
-    auto const host = !mode ? "api-public.sandbox.pro.coinbase.com" : "NOT";
+    auto const host = mode ? "api.pro.coinbase.com" : "api-public.sandbox.pro.coinbase.com";
     auto const port = "443";
 
     results = resolver->resolve(host, port);
@@ -40,7 +40,7 @@ HttpClient::makeRequest(const std::string &target) {
 
         beast::ssl_stream<beast::tcp_stream> stream(*ioc, *ctx);
 
-        auto const host = !mode ? "api-public.sandbox.pro.coinbase.com" : "NOT";
+        auto const host = mode ? "api.pro.coinbase.com" : "api-public.sandbox.pro.coinbase.com";
 
         if (!SSL_set_tlsext_host_name(stream.native_handle(), host)) {
             //beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
@@ -67,7 +67,7 @@ HttpClient::makeRequest(const std::string &target) {
         std::stringstream ss;
         ss << std::string(boost::asio::buffers_begin(res.body().data()),
                           boost::asio::buffers_end(res.body().data()));
-        // std::cout << ss.str() << std::endl;
+        std::cout << ss.str() << std::endl;
 
         pt::ptree resp;
         pt::read_json(ss, resp);

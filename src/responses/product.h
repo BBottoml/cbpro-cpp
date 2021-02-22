@@ -17,9 +17,6 @@ namespace responses {
     public:
         explicit product(const pt::ptree &data);
 
-    private:
-        pt::ptree data;
-    public:
         [[nodiscard]] std::string getId() const;
 
         [[nodiscard]] std::string getDisplayName() const;
@@ -51,6 +48,9 @@ namespace responses {
         [[nodiscard]] bool getPostOnly() const;
 
         [[nodiscard]] bool getTradingDisabled() const;
+
+    private:
+        pt::ptree data;
     };
 }
 #endif //CBPRO_PRODUCT_H

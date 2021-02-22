@@ -3,6 +3,7 @@
 //
 
 #include <cbpro++/marketdata/products.h>
+#include "../responses/book.h"
 
 namespace marketdata {
     namespace products {
@@ -16,6 +17,7 @@ namespace marketdata {
                 responses::product product(prod.second);
                 products.push_back(product);
             }
+
             return products;
         }
 
@@ -28,6 +30,19 @@ namespace marketdata {
 
             responses::product product(resp);
             return product;
+        }
+
+        void getOrderBook(Auth &auth, std::string &productId) {
+            const auto &httpClient = auth.getHttpClientPtr();
+
+            std::string target = "/products/";
+            target += productId;
+            target += "/book";
+            target += "?level=3";
+            auto resp = httpClient->makeRequest(target);
+
+            responses::book book();
+
         }
 
     } // namespace products

@@ -5,24 +5,19 @@ set(CMAKE_CXX_STANDARD 17)
 include(GNUInstallDirs)
 
 # TODO:
-# Add support for install prefix (deprecate usage of INCLUDEDIR and LIBDIR) (DONE)
 # Add support for custom Boost root
 # Add support for find_package command and further general lib installation
 
-# find files
+# gather headers
 file(GLOB cbpro++_TOP_HEADERS include/*.h)
 file(GLOB cbpro++_MDATA_HEADERS include/marketdata/*.h)
-file(GLOB cbpro++_RESPONSES_HEADERS include/responses/*.h)
-set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS} ${cbpro++_RESPONSES_HEADERS})
-
-source_group("Header Files\\cbpro++" FILES ${cbpro++_TOP_HEADERS})
-source_group("Header Files\\cbpro++\\marketdata" FILES ${cbpro++_MDATA_HEADERS})
-source_group("Header Files\\cbpro++\\responses" FILES ${cbpro++_RESPONSES_HEADERS})
-
 file(GLOB_RECURSE cbpro++_PRIVATE_HEADERS src/*.hpp)
 file(GLOB_RECURSE cbpro++_SOURCES src/*.cpp)
+source_group("Header Files\\cbpro++" FILES ${cbpro++_TOP_HEADERS})
+source_group("Header Files\\cbpro++\\marketdata" FILES ${cbpro++_MDATA_HEADERS})
 
 # dependency handling
+set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS})
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/install)
 set(OPENSSL_USE_STATIC_LIBS TRUE)
 set(Boost_USE_STATIC_LIBS OFF)
@@ -61,17 +56,15 @@ install(
         EXPORT cbpro++_export
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/cbpro++"
         NAMESPACE "cbpro++::"
-        # In this CMake config file no dependencies are considered. But since we
-        # do not use any `find_package` call here this approach is sufficient.
         FILE cbpro++-targets.cmake
 )
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/cbpro++-config.cmake"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/cbpro++")
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CBPro++")
-SET(CPACK_PACKAGE_VENDOR "BBottoml")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "cbpro++")
+SET(CPACK_PACKAGE_VENDOR "bbottoml")
 SET(CPACK_PACKAGE_VERSION "1.0.0")
 SET(CPACK_GENERATOR "RPM;DEB")
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Nobody")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "N/A")
 INCLUDE(CPack)
