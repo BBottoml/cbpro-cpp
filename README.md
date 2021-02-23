@@ -39,8 +39,13 @@ To see how to use the library, visit the examples directory to view a number of 
 recommended that you familiarize yourself with the [Coinbase Pro API documentation](https://docs.pro.coinbase.com/).
 
 ## Features
-- [x] Market data: product retrieval
+- [x] Market data: product(s) retrieval
 - [x] Market data: order book retrieval  
+- [x] Market data: ticker retrieval 
+- [x] Market data: trade retrieval
+- [x] Market data: 24 hr stats
+- [x] Market data: currency + currencies retrieval
+- [ ] Market data: historical stats    
 - [ ] WebSocket support
 
 ## Misc
@@ -49,3 +54,5 @@ recommended that you familiarize yourself with the [Coinbase Pro API documentati
 
 ## Contributors 
 * [BBottoml](https://github.com/BBottoml) (Principal maintainer)
+
+Read more about this project [here](https://bottomlee.dev/cbpro)
