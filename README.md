@@ -38,5 +38,10 @@ target_link_libraries(<YOUR_EXECUTABLE> PRIVATE cbpro++::cbpro++)
 To see how to use the library, visit the examples directory to view a number of use cases. Additionally, it is still 
 recommended that you familiarize yourself with the [Coinbase Pro API documentation](https://docs.pro.coinbase.com/).
 
+## Features
+- [x] Market data: product retrieval
+- [x] Market data: order book retrieval  
+- [ ] WebSocket support
+
 ## Contributors 
 * [BBottoml](https://github.com/BBottoml) (Principal maintainer)
