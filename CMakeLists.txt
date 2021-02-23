@@ -22,7 +22,7 @@ file(GLOB_RECURSE cbpro++_PRIVATE_HEADERS src/*.hpp)
 file(GLOB_RECURSE cbpro++_SOURCES src/*.cpp)
 
 # dependency handling
-set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS}  ${cbpro++_RESPONSES_HEADERS} ${cbpro++_MDATA_HEADERS})
+set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_RESPONSES_HEADERS} ${cbpro++_MDATA_HEADERS})
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/install)
 set(OPENSSL_USE_STATIC_LIBS TRUE)
 set(Boost_USE_STATIC_LIBS OFF)

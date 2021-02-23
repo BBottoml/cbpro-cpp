@@ -23,7 +23,7 @@ namespace responses {
     }
 
     std::string
-    responses::product::getQuoteCurrency() const {
+    product::getQuoteCurrency() const {
         return data.get<std::string>("quote_currency");;
     }
 
@@ -84,4 +84,4 @@ namespace responses {
     }
 
     product::product(const pt::ptree &data) : data(data) {}
-}
+} // namespace responses

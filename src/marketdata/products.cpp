@@ -3,6 +3,7 @@
 //
 #include <cbpro++/marketdata/products.h>
 
+
 namespace marketdata {
     namespace products {
 
@@ -28,6 +29,46 @@ namespace marketdata {
 
             responses::product product(resp);
             return product;
+        }
+
+        responses::ticker getTicker(Auth &auth, std::string &productId) {
+            const auto &httpClient = auth.getHttpClientPtr();
+
+            std::string target = "/products/";
+            target += productId;
+            target += "/ticker";
+            auto resp = httpClient->makeRequest(target);
+
+            responses::ticker ticker(resp);
+            return ticker;
+        }
+
+        responses::stats getStats(Auth &auth, std::string &productId) {
+            const auto &httpClient = auth.getHttpClientPtr();
+
+            std::string target = "/products/";
+            target += productId;
+            target += "/stats";
+            auto resp = httpClient->makeRequest(target);
+
+            responses::stats stats(resp);
+            return stats;
+        }
+
+        std::vector<responses::trade> getTrades(Auth &auth, std::string &productId) {
+            const auto &httpClient = auth.getHttpClientPtr();
+            std::string target = "/products/";
+            target += productId;
+            target += "/trades";
+            auto resp = httpClient->makeRequest(target);
+
+            std::vector<responses::trade> trades;
+            for (const auto &tr : resp) {
+                responses::trade currTrade(tr.second);
+                trades.push_back(currTrade);
+            }
+
+            return trades;
         }
 
         template<class X, class Y>
@@ -88,7 +129,6 @@ namespace marketdata {
             std::string level = "?level=3";
             return getOrderBook<responses::bidLevel3, responses::askLevel3>(auth, productId, level);
         }
-
 
 
     } // namespace products

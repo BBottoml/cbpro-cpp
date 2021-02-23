@@ -35,6 +35,6 @@ namespace responses {
         std::vector<Y> asks;
         long sequence;
     };
-}
+} // namespace responses
 
 #endif //CBPRO_BOOK_H

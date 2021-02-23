@@ -52,5 +52,5 @@ namespace responses {
     private:
         pt::ptree data;
     };
-}
+} // namespace responses
 #endif //CBPRO_PRODUCT_H
