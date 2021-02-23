@@ -43,5 +43,9 @@ recommended that you familiarize yourself with the [Coinbase Pro API documentati
 - [x] Market data: order book retrieval  
 - [ ] WebSocket support
 
+## Misc
+- [ ] Investigate moving from property tree to actual json parser 
+- [ ] Implement advanced error handling
+
 ## Contributors 
 * [BBottoml](https://github.com/BBottoml) (Principal maintainer)
