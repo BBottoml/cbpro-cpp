@@ -1,5 +1,5 @@
 # cbpro++
-A Coinbase Pro API client library for C++. 
+A Coinbase Pro API client library for C++ (C++17). 
 
 ## Summary
 cbpro++ allows users to easily connect to and trade on the Coinbase Pro exchange. The library has minimal dependencies 

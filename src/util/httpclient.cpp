@@ -67,7 +67,7 @@ HttpClient::makeRequest(const std::string &target) {
         std::stringstream ss;
         ss << std::string(boost::asio::buffers_begin(res.body().data()),
                           boost::asio::buffers_end(res.body().data()));
-        std::cout << ss.str() << std::endl;
+        //std::cout << ss.str() << std::endl;
 
         pt::ptree resp;
         pt::read_json(ss, resp);

@@ -1,9 +1,7 @@
 //
 // Created by Bradley Bottomlee on 1/19/21.
 //
-
 #include <cbpro++/marketdata/products.h>
-#include "../responses/book.h"
 
 namespace marketdata {
     namespace products {
@@ -32,18 +30,66 @@ namespace marketdata {
             return product;
         }
 
-        void getOrderBook(Auth &auth, std::string &productId) {
+        template<class X, class Y>
+        responses::book<X, Y> getOrderBook(Auth &auth, std::string &productId, std::string &level) {
             const auto &httpClient = auth.getHttpClientPtr();
-
             std::string target = "/products/";
             target += productId;
             target += "/book";
-            target += "?level=3";
+            target += level;
+
             auto resp = httpClient->makeRequest(target);
 
-            responses::book book();
+            std::vector<X> bids;
+            std::vector<Y> asks;
+            long sequence = resp.get<long>("sequence");
 
+            // property tree limitations
+            for (auto &bid : resp.get_child("bids")) {
+                auto bidIter = bid.second.begin();
+                auto price = bidIter->second.data();
+                bidIter++;
+                auto size = bidIter->second.data();
+                bidIter++;
+                auto thirdObj = bidIter->second.data();
+                X currBid(price, size, thirdObj);
+                bids.push_back(currBid);
+            }
+
+            for (auto &ask : resp.get_child("asks")) {
+                auto askIter = ask.second.begin();
+                auto price = askIter->second.data();
+                askIter++;
+                auto size = askIter->second.data();
+                askIter++;
+                auto thirdObj = askIter->second.data();
+                Y currAsk(price, size, thirdObj);
+                asks.push_back(currAsk);
+            }
+
+            responses::book<X, Y> currBook(bids, asks, sequence);
+            return currBook;
         }
+
+        responses::book<responses::bidLevel1_2, responses::askLevel1_2>
+        getOrderBookLevelOne(Auth &auth, std::string &productId) {
+            std::string level = "";
+            return getOrderBook<responses::bidLevel1_2, responses::askLevel1_2>(auth, productId, level);
+        }
+
+        responses::book<responses::bidLevel1_2, responses::askLevel1_2>
+        getOrderBookLevelTwo(Auth &auth, std::string &productId) {
+            std::string level = "?level=2";
+            return getOrderBook<responses::bidLevel1_2, responses::askLevel1_2>(auth, productId, level);
+        }
+
+        responses::book<responses::bidLevel3, responses::askLevel3>
+        getOrderBookLevelThree(Auth &auth, std::string &productId) {
+            std::string level = "?level=3";
+            return getOrderBook<responses::bidLevel3, responses::askLevel3>(auth, productId, level);
+        }
+
+
 
     } // namespace products
 } // namespace marketdata

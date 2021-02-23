@@ -11,13 +11,18 @@ include(GNUInstallDirs)
 # gather headers
 file(GLOB cbpro++_TOP_HEADERS include/*.h)
 file(GLOB cbpro++_MDATA_HEADERS include/marketdata/*.h)
-file(GLOB_RECURSE cbpro++_PRIVATE_HEADERS src/*.hpp)
-file(GLOB_RECURSE cbpro++_SOURCES src/*.cpp)
+file(GLOB cbpro++_RESPONSES_HEADERS include/responses/*.h)
+set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS} ${cbpro++_RESPONSES_HEADERS})
+
 source_group("Header Files\\cbpro++" FILES ${cbpro++_TOP_HEADERS})
 source_group("Header Files\\cbpro++\\marketdata" FILES ${cbpro++_MDATA_HEADERS})
+source_group("Header Files\\cbpro++\\responses" FILES ${cbpro++_RESPONSES_HEADERS})
+
+file(GLOB_RECURSE cbpro++_PRIVATE_HEADERS src/*.hpp)
+file(GLOB_RECURSE cbpro++_SOURCES src/*.cpp)
 
 # dependency handling
-set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS})
+set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS}  ${cbpro++_RESPONSES_HEADERS} ${cbpro++_MDATA_HEADERS})
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/install)
 set(OPENSSL_USE_STATIC_LIBS TRUE)
 set(Boost_USE_STATIC_LIBS OFF)
@@ -31,7 +36,7 @@ find_package(Boost REQUIRED)
 add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS})
 
 target_link_libraries(cbpro++ PRIVATE OpenSSL::SSL OpenSSL::Crypto ${BOOST_INCLUDE_LIBS})
-target_include_directories(cbpro++ PRIVATE SYSTEM ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} })
+target_include_directories(cbpro++ PRIVATE SYSTEM ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
 target_include_directories(
         cbpro++
