@@ -1,7 +1,7 @@
 //
 // Created by Bradley Bottomlee on 2/23/21.
 //
-#include <cbpro++/responses/stats.h>
+#include <cbpro++/marketdata/stats.h>
 
 namespace responses {
     std::string

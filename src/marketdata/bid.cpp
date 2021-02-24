@@ -2,7 +2,7 @@
 // Created by Bradley Bottomlee on 2/11/21.
 //
 
-#include <cbpro++/responses/bid.h>
+#include <cbpro++/marketdata/bid.h>
 
 #include <utility>
 

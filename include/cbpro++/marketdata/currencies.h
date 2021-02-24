@@ -6,13 +6,13 @@
 #define CBPRO_CURRENCIES_H
 
 #include <cbpro++/auth.h>
-#include <cbpro++/responses/currency.h>
+#include <cbpro++/marketdata/currency.h>
 
 
 namespace marketdata {
     namespace currencies {
 
-        responses::currency getCurrency(Auth &auth, std::string &id);
+        responses::currency getCurrency(Auth &auth, const std::string &id);
 
         std::vector<responses::currency> getCurrencies(Auth &auth);
 

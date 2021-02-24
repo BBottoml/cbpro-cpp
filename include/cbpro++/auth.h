@@ -21,7 +21,7 @@ public:
         CONSOLE,
     };
 
-    Auth(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase, Auth::Mode mode);
+    Auth(std::string apiKey, std::string apiSecret, std::string passphrase, Auth::Mode mode);
 
     ~Auth();
 
@@ -36,9 +36,9 @@ public:
     [[nodiscard]] const std::shared_ptr<HttpClient> &getHttpClientPtr() const;
 
 private:
-    const std::string &apiKey;
-    const std::string &apiSecret;
-    const std::string &passphrase;
+    std::string apiKey;
+    std::string apiSecret;
+    std::string passphrase;
     Auth::Mode mode;
 
     std::shared_ptr<HttpClient> httpClientPtr;

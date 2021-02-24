@@ -3,7 +3,7 @@
 //
 
 #include <string>
-#include <cbpro++/responses/product.h>
+#include <cbpro++/marketdata/product.h>
 
 namespace responses {
 

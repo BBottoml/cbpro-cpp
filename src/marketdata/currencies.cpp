@@ -6,7 +6,7 @@
 namespace marketdata {
     namespace currencies {
 
-        responses::currency getCurrency(Auth &auth, std::string &id) {
+        responses::currency getCurrency(Auth &auth, const std::string &id) {
             const auto &httpClient = auth.getHttpClientPtr();
 
             std::string target = "/currencies/";

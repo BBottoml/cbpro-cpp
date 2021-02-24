@@ -2,7 +2,7 @@
 // Created by Bradley Bottomlee on 2/23/21.
 //
 
-#include <cbpro++/responses/currency.h>
+#include <cbpro++/marketdata/currency.h>
 
 namespace responses {
 

@@ -7,8 +7,8 @@
 
 #include <vector>
 #include <string>
-#include <cbpro++/responses/bid.h>
-#include <cbpro++/responses/ask.h>
+#include <cbpro++/marketdata/bid.h>
+#include <cbpro++/marketdata/ask.h>
 
 
 namespace responses {

@@ -2,7 +2,7 @@
 // Created by Bradley Bottomlee on 2/23/21.
 //
 
-#include <cbpro++/responses/trade.h>
+#include <cbpro++/marketdata/trade.h>
 
 namespace responses {
 

@@ -7,6 +7,11 @@
 namespace marketdata {
     namespace products {
 
+        void test(Auth &auth) {
+            const auto &httpClient = auth.getHttpClientPtr();
+            httpClient->makeRequest("/accounts", "", HttpClient::RequestVerb::GET);
+        }
+
         std::vector<responses::product> getProducts(Auth &auth) {
             const auto &httpClient = auth.getHttpClientPtr();
             auto resp = httpClient->makeRequest("/products");
@@ -20,7 +25,7 @@ namespace marketdata {
             return products;
         }
 
-        responses::product getProduct(Auth &auth, std::string &productId) {
+        responses::product getProduct(Auth &auth, const std::string &productId) {
             const auto &httpClient = auth.getHttpClientPtr();
 
             std::string target = "/products/";
@@ -31,7 +36,7 @@ namespace marketdata {
             return product;
         }
 
-        responses::ticker getTicker(Auth &auth, std::string &productId) {
+        responses::ticker getTicker(Auth &auth, const std::string &productId) {
             const auto &httpClient = auth.getHttpClientPtr();
 
             std::string target = "/products/";
@@ -43,7 +48,7 @@ namespace marketdata {
             return ticker;
         }
 
-        responses::stats getStats(Auth &auth, std::string &productId) {
+        responses::stats getStats(Auth &auth, const std::string &productId) {
             const auto &httpClient = auth.getHttpClientPtr();
 
             std::string target = "/products/";
@@ -55,7 +60,7 @@ namespace marketdata {
             return stats;
         }
 
-        std::vector<responses::trade> getTrades(Auth &auth, std::string &productId) {
+        std::vector<responses::trade> getTrades(Auth &auth, const std::string &productId) {
             const auto &httpClient = auth.getHttpClientPtr();
             std::string target = "/products/";
             target += productId;
@@ -72,7 +77,7 @@ namespace marketdata {
         }
 
         template<class X, class Y>
-        responses::book<X, Y> getOrderBook(Auth &auth, std::string &productId, std::string &level) {
+        responses::book<X, Y> getOrderBook(Auth &auth, const std::string &productId, const std::string &level) {
             const auto &httpClient = auth.getHttpClientPtr();
             std::string target = "/products/";
             target += productId;
@@ -113,19 +118,19 @@ namespace marketdata {
         }
 
         responses::book<responses::bidLevel1_2, responses::askLevel1_2>
-        getOrderBookLevelOne(Auth &auth, std::string &productId) {
+        getOrderBookLevelOne(Auth &auth, const std::string &productId) {
             std::string level = "";
             return getOrderBook<responses::bidLevel1_2, responses::askLevel1_2>(auth, productId, level);
         }
 
         responses::book<responses::bidLevel1_2, responses::askLevel1_2>
-        getOrderBookLevelTwo(Auth &auth, std::string &productId) {
+        getOrderBookLevelTwo(Auth &auth, const std::string &productId) {
             std::string level = "?level=2";
             return getOrderBook<responses::bidLevel1_2, responses::askLevel1_2>(auth, productId, level);
         }
 
         responses::book<responses::bidLevel3, responses::askLevel3>
-        getOrderBookLevelThree(Auth &auth, std::string &productId) {
+        getOrderBookLevelThree(Auth &auth, const std::string &productId) {
             std::string level = "?level=3";
             return getOrderBook<responses::bidLevel3, responses::askLevel3>(auth, productId, level);
         }

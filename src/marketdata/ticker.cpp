@@ -2,7 +2,7 @@
 // Created by Bradley Bottomlee on 2/23/21.
 //
 
-#include <cbpro++/responses/ticker.h>
+#include <cbpro++/marketdata/ticker.h>
 
 namespace responses {
     std::string

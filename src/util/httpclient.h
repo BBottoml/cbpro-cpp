@@ -21,6 +21,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <openssl/hmac.h>
+#include <openssl/evp.h>
 
 #include "Base64.h"
 
@@ -34,7 +35,7 @@ namespace pt = boost::property_tree;
 
 class HttpClient {
 public:
-    HttpClient(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase, bool mode);
+    HttpClient(std::string &apiKey, std::string &apiSecret, std::string &passphrase, bool mode);
 
     ~HttpClient();
 
@@ -53,14 +54,12 @@ private:
     // std::shared_ptr<beast::ssl_stream<beast::tcp_stream>> stream;
 
     //const std::string &results;
-    const std::string &apiKey;
-    const std::string &apiSecret;
-    const std::string &passphrase;
+    std::string apiKey;
+    std::string apiSecret;
+    std::string passphrase;
     bool mode;
     int version;
 
-    std::string createSignature(const std::string &target, const std::string &body, HttpClient::RequestVerb);
-    
 };
 
 #endif //CBPRO_HTTPCLIENT_H

@@ -4,7 +4,7 @@
 
 #include <cbpro++/auth.h>
 
-Auth::Auth(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase, Auth::Mode mode)
+Auth::Auth(std::string apiKey, std::string apiSecret, std::string passphrase, Auth::Mode mode)
         : apiKey(apiKey),
           apiSecret(
                   apiSecret),

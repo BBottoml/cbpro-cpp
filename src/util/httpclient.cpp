@@ -7,7 +7,7 @@
 
 #include "httpclient.h"
 
-HttpClient::HttpClient(const std::string &apiKey, const std::string &apiSecret, const std::string &passphrase,
+HttpClient::HttpClient(std::string &apiKey, std::string &apiSecret, std::string &passphrase,
                        bool mode) : apiKey(apiKey),
                                     apiSecret(apiSecret), passphrase(passphrase), mode(mode) {
     version = 11;
@@ -25,34 +25,122 @@ HttpClient::HttpClient(const std::string &apiKey, const std::string &apiSecret, 
 
 HttpClient::~HttpClient() = default;
 
+/**
+ * Signed GET | POST request
+ * @param target
+ * @param body
+ * @param rv
+ * @return
+ */
 pt::ptree
 HttpClient::makeRequest(const std::string &target, const std::string &body, HttpClient::RequestVerb rv) {
     auto boostVerb = rv == HttpClient::RequestVerb::GET ? http::verb::get : http::verb::post;
-    auto signature = createSignature(target, body, rv);
-    std::unordered_map<std::string, std::string> headers; // initialize with expected headers
-    // TODO: implement boost calls
-    return {};
-}
 
-pt::ptree
-HttpClient::makeRequest(const std::string &target) {
+    // construct necessary signature
+    auto timestamp = makeRequest("/time").get<std::string>("epoch");  // response from time endpoint
+    auto message = timestamp + (rv == HttpClient::RequestVerb::GET ? "GET" : "POST") + target + body;
+
+    std::string postDecodeSecret;
+    macaron::Base64::Decode(apiSecret, postDecodeSecret);
+
+    char *key = strdup(postDecodeSecret.c_str());
+    int key_len = strlen(key);
+
+    const auto *data = (const unsigned char *) strdup(message.c_str());
+    int data_len = strlen((char *) data);
+    unsigned char *md = nullptr;
+    unsigned int md_len = -1;
+
+    md = HMAC(EVP_sha256(), (const void *) key, key_len, data, data_len, md, &md_len);
+
+    const char *preEncodeSignature_c = strdup(reinterpret_cast<const char *>(md));
+    std::string preEncodeSignature(preEncodeSignature_c);
+    std::string postEncodeSignature = macaron::Base64::Encode(preEncodeSignature);
+
+    free(key);
+    free((char *) data);
+    free((char *) preEncodeSignature_c);
+
     try {
 
-        beast::ssl_stream<beast::tcp_stream> stream(*ioc, *ctx);
+        beast::ssl_stream <beast::tcp_stream> stream(*ioc, *ctx);
 
         auto const host = mode ? "api.pro.coinbase.com" : "api-public.sandbox.pro.coinbase.com";
 
         if (!SSL_set_tlsext_host_name(stream.native_handle(), host)) {
-            //beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
-            //throw beast::system_error{ec};
-            std::cerr << "SNI hostname could not be set correctly" << std::endl;
+            std::cerr << "Error: SNI host name set incorrectly" << std::endl;
         }
 
         beast::get_lowest_layer(stream).connect(results);
 
         stream.handshake(ssl::stream_base::client);
 
-        http::request<http::string_body> req{http::verb::get, target, version};
+        http::request <http::string_body> req{boostVerb, target, version};
+        req.set(http::field::host, host);
+        req.set("CB-ACCESS-SIGN", postEncodeSignature);
+        req.set("CB-ACCESS-TIMESTAMP", timestamp);
+        req.set("CB-ACCESS-KEY", apiKey);
+        req.set("CB-ACCESS-PASSPHRASE", passphrase);
+        req.set("Content-Type", "application/json");
+        req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+
+        http::write(stream, req);
+
+        beast::flat_buffer buffer;
+
+        http::response <http::dynamic_body> res;
+
+        http::read(stream, buffer, res);
+
+        std::stringstream ss;
+        ss << std::string(boost::asio::buffers_begin(res.body().data()),
+                          boost::asio::buffers_end(res.body().data()));
+        // std::cout << ss.str() << std::endl;
+
+        pt::ptree resp;
+        pt::read_json(ss, resp);
+
+        // determine if IP whitelist is configured correctly
+        auto msg = resp.get_optional<std::string>("message");
+        if (msg && msg.value() == "IP does not match IP whitelist") {
+            std::cerr << "Coinbase Connectivity Error: IP does not match IP whitelist. See README for details"
+                      << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        beast::error_code ec;
+        stream.shutdown(ec);
+
+        return resp;
+    }
+    catch (std::exception const &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return {};
+    }
+}
+
+/**
+ * Unsigned GET request
+ * @param target
+ * @return
+ */
+pt::ptree
+HttpClient::makeRequest(const std::string &target) {
+    try {
+
+        beast::ssl_stream <beast::tcp_stream> stream(*ioc, *ctx);
+
+        auto const host = mode ? "api.pro.coinbase.com" : "api-public.sandbox.pro.coinbase.com";
+
+        if (!SSL_set_tlsext_host_name(stream.native_handle(), host)) {
+            std::cerr << "Error: SNI host name set incorrectly" << std::endl;
+        }
+
+        beast::get_lowest_layer(stream).connect(results);
+
+        stream.handshake(ssl::stream_base::client);
+
+        http::request <http::string_body> req{http::verb::get, target, version};
         req.set(http::field::host, host);
         req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 
@@ -60,7 +148,7 @@ HttpClient::makeRequest(const std::string &target) {
 
         beast::flat_buffer buffer;
 
-        http::response<http::dynamic_body> res;
+        http::response <http::dynamic_body> res;
 
         http::read(stream, buffer, res);
 
@@ -71,22 +159,9 @@ HttpClient::makeRequest(const std::string &target) {
 
         pt::ptree resp;
         pt::read_json(ss, resp);
-        //std::cout << resp.get<std::string>("epoch") << std::endl;
-        //std::cout << resp.get<std::string>("iso") << std::endl;
 
         beast::error_code ec;
         stream.shutdown(ec);
-
-        /*
-        if(ec == net::error::eof)
-        {
-            // Rationale:
-            // http://stackoverflow.com/questions/25587403/boost-asio-ssl-async-shutdown-always-finishes-with-an-error
-            ec = {};
-        }
-        if(ec)
-            std::cout << "error" << std::endl;
-        */
 
         return resp;
     }
@@ -95,20 +170,4 @@ HttpClient::makeRequest(const std::string &target) {
         return {};
     }
 }
-
-std::string HttpClient::createSignature(const std::string &target, const std::string &body,
-                                        HttpClient::RequestVerb rv) {
-    std::unordered_map<std::string, std::string> map;
-    auto time = makeRequest("/time").get<std::string>(
-            "epoch");  // json response from time endpoint
-    auto message = time + (rv == HttpClient::RequestVerb::GET ? "GET" : "POST") + target + body;
-
-    const std::string &preDecodeSecret = apiSecret;
-    std::string postDecodeSecret;
-    macaron::Base64::Decode(preDecodeSecret, postDecodeSecret);
-
-
-    return std::string();
-}
-
 
