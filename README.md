@@ -38,6 +38,10 @@ target_link_libraries(<YOUR_EXECUTABLE> PRIVATE cbpro++::cbpro++)
 To see how to use the library, visit the examples directory to view a number of use cases. Additionally, it is still 
 recommended that you familiarize yourself with the [Coinbase Pro API documentation](https://docs.pro.coinbase.com/).
 
+## Remarks
+* IP Whitelist issue. Although this is not a library specific issue, you may still encouter this issue. When whitelisting your IPs, whitelist both your IPv6 and IPv4 addresses (if applicable) using [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation). 
+* Numeric values as strings. Throughout the library, you may notice that certain values that one would anticipate to be a numeric type (e.g., double, long) are represented as strings. Although this may seem like an inconvenience, [Coinbase](https://docs.pro.coinbase.com/#types) recommends using strings to maintain precision when sending requests. Additionally, numeric values are returned as strings from coinbase. Since it is a trivial matter to convert strings to numeric types using standard library functions (e.g., std::stod for string to double) and vice versa, this is left to the user. 
+
 ## Features
 - [x] Market data: product(s) retrieval
 - [x] Market data: order book retrieval  
