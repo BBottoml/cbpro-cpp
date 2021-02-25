@@ -17,8 +17,6 @@
 
 namespace marketdata {
     namespace products {
-        void test(Auth &auth);
-
         std::vector<responses::product> getProducts(Auth &auth);
 
         responses::product getProduct(Auth &auth, const std::string &productId);
