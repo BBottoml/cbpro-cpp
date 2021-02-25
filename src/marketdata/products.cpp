@@ -6,12 +6,7 @@
 
 namespace marketdata {
     namespace products {
-
-        void test(Auth &auth) {
-            const auto &httpClient = auth.getHttpClientPtr();
-            httpClient->makeRequest("/accounts", "", HttpClient::RequestVerb::GET);
-        }
-
+        
         std::vector<responses::product> getProducts(Auth &auth) {
             const auto &httpClient = auth.getHttpClientPtr();
             auto resp = httpClient->makeRequest("/products");
