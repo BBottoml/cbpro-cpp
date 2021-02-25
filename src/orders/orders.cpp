@@ -117,7 +117,6 @@ namespace orders {
         body.put("price", price);
         body.put("type", "limit");
 
-        std::cout << opts.getClientOid() << std::endl;
         if (!opts.getClientOid().empty()) {
             body.put("client_oid", opts.getClientOid());
         }
