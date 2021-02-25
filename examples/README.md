@@ -5,7 +5,7 @@ To get started, there are only a handful of header files you need to familarize 
 * cbpro++/marketdata/currencies.h
 * cbpro++/accounts/accounts.h
 * cbpro++/orders/orders.h
-* cbpro++/Auth.h
+* cbpro++/auth.h
 
 (As the library expands and covers more functionality, there may be additional headers). 
 
