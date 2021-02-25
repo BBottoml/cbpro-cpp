@@ -32,7 +32,7 @@ find_package(Boost REQUIRED)
 
 add_library(cbpro++ ${cbpro++_SOURCES} ${cbpro++_PUBLIC_HEADERS} ${cbpro++_PRIVATE_HEADERS})
 
-target_link_libraries(cbpro++ PRIVATE OpenSSL::SSL OpenSSL::Crypto ${BOOST_INCLUDE_LIBS})
+target_link_libraries(cbpro++ PRIVATE OpenSSL::SSL OpenSSL::Crypto ${CMAKE_THREAD_LIBS_INIT} ${BOOST_INCLUDE_LIBS})
 target_include_directories(cbpro++ PRIVATE SYSTEM ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
 target_include_directories(
