@@ -110,7 +110,7 @@ HttpClient::makeRequest(const std::string &target, const std::string &body, Http
 
         http::read(stream, buffer, res);
 
-        std::cout << res.result_int() << std::endl;
+        // std::cout << res.result_int() << std::endl;
         if (res.result_int() == 400 || res.result_int() == 404) {
             pt::ptree failResp;
             failResp.put("error", true);
