@@ -3,7 +3,7 @@
 #include <cbpro++/marketdata/products.h> 
 
 int main() {
-    Auth auth("<API-KEY>", "<API-SECRET>", "<PASSPHRASE>");
+    Auth auth("<API-KEY>", "<API-SECRET>", "<PASSPHRASE>", Auth::Mode::SANDBOX);
 
     auto book = marketdata::products::getOrderBookLevelThree(auth, "BTC-USD");
     auto bids = book.getBids();
