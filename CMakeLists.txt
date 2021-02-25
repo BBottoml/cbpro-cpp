@@ -8,17 +8,19 @@ include(GNUInstallDirs)
 file(GLOB cbpro++_TOP_HEADERS include/*.h)
 file(GLOB cbpro++_MDATA_HEADERS include/marketdata/*.h)
 file(GLOB cbpro++_ACCOUNTS_HEADERS include/accounts/*.h)
+file(GLOB cbpro++_ORDERS_HEADERS include/orders/*.h)
 file(GLOB_RECURSE cbpro++_PRIVATE_HEADERS src/*.hpp)
 file(GLOB_RECURSE cbpro++_SOURCES src/*.cpp)
 source_group("Header Files\\cbpro++" FILES ${cbpro++_TOP_HEADERS})
 source_group("Header Files\\cbpro++\\marketdata" FILES ${cbpro++_MDATA_HEADERS})
 source_group("Header Files\\cbpro++\\accounts" FILES ${cbpro++_ACCOUNTS_HEADERS})
+source_group("Header Files\\cbpro++\\orders" FILES ${cbpro++_ORDERS_HEADERS})
 
-set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS} ${cbpro++_ACCOUNTS_HEADERS})
+set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS} ${cbpro++_ACCOUNTS_HEADERS} ${cbpro++_ORDERS_HEADERS})
 
 
 # dependency handling
-set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_ACCOUNTS_HEADERS} ${cbpro++_MDATA_HEADERS})
+set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS} ${cbpro++_ACCOUNTS_HEADERS} ${cbpro++_ORDERS_HEADERS} src/orders/order.cpp include/cbpro++/orders/order.h include/cbpro++/orders/options.h src/orders/options.cpp)
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/install)
 set(OPENSSL_USE_STATIC_LIBS TRUE)
 set(Boost_USE_STATIC_LIBS OFF)

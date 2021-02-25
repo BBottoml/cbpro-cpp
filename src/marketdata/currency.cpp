@@ -72,5 +72,45 @@ namespace responses {
         return details.get<std::string>("crypto_transaction_link");
     }
 
+    std::string
+    currency::getDisplayName() const {
+        auto details = data.get_child("details");
+        auto displayName = data.get_optional<std::string>("display_name");
+        return displayName ? displayName.value() : "";
+    }
+
+    /**
+     *
+     * @return processing time in seconds or -1 if not provided in response
+     */
+    long
+    currency::getProcessingTime() const {
+        auto details = data.get_child("details");
+        auto processingTime = data.get_optional<long>("processing_time_seconds");
+        return processingTime ? processingTime.value() : -1;
+    }
+
+    /**
+     *
+     * @return min withdrawal amount or -1 if not provided in response
+     */
+    long
+    currency::minWithdrawalAmount() const {
+        auto details = data.get_child("details");
+        auto amount = data.get_optional<long>("min_withdrawal_amount");
+        return amount ? amount.value() : -1;
+    }
+
+    /**
+     *
+     * @return max withdrawal amount or -1 if not provided in response
+     */
+    long
+    currency::maxWithdrawalAmount() const {
+        auto details = data.get_child("details");
+        auto amount = data.get_optional<long>("max_withdrawal_amount");
+        return amount ? amount.value() : -1;
+    }
+
     currency::currency(const pt::ptree &data) : data(data) {}
 } // namespace responses

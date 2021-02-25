@@ -34,11 +34,23 @@ HttpClient::~HttpClient() = default;
  */
 pt::ptree
 HttpClient::makeRequest(const std::string &target, const std::string &body, HttpClient::RequestVerb rv) {
-    auto boostVerb = rv == HttpClient::RequestVerb::GET ? http::verb::get : http::verb::post;
+    http::verb boostVerb;
+    std::string messageVerb;
+    if (rv == HttpClient::RequestVerb::GET) {
+        messageVerb = "GET";
+        boostVerb = http::verb::get;
+    } else if (rv == HttpClient::RequestVerb::POST) {
+        messageVerb = "POST";
+        boostVerb = http::verb::post;
+    } else {
+        messageVerb = "DELETE";
+        boostVerb = http::verb::delete_;
+    }
 
     // construct necessary signature
+    // TODO: Replace need to hit time endpoint as it is highly inefficient
     auto timestamp = makeRequest("/time").get<std::string>("epoch");  // response from time endpoint
-    auto message = timestamp + (rv == HttpClient::RequestVerb::GET ? "GET" : "POST") + target + body;
+    auto message = timestamp + messageVerb + target + body;
 
     std::string postDecodeSecret;
     macaron::Base64::Decode(apiSecret, postDecodeSecret);
@@ -61,9 +73,11 @@ HttpClient::makeRequest(const std::string &target, const std::string &body, Http
     free((char *) data);
     free((char *) preEncodeSignature_c);
 
+    boost::replace_all(postEncodeSignature, "\n", "");
+
     try {
 
-        beast::ssl_stream <beast::tcp_stream> stream(*ioc, *ctx);
+        beast::ssl_stream<beast::tcp_stream> stream(*ioc, *ctx);
 
         auto const host = mode ? "api.pro.coinbase.com" : "api-public.sandbox.pro.coinbase.com";
 
@@ -75,22 +89,33 @@ HttpClient::makeRequest(const std::string &target, const std::string &body, Http
 
         stream.handshake(ssl::stream_base::client);
 
-        http::request <http::string_body> req{boostVerb, target, version};
+        http::request<http::string_body> req{boostVerb, target, version};
         req.set(http::field::host, host);
+        req.set(http::field::content_type, "application/json");
+        req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
         req.set("CB-ACCESS-SIGN", postEncodeSignature);
         req.set("CB-ACCESS-TIMESTAMP", timestamp);
         req.set("CB-ACCESS-KEY", apiKey);
         req.set("CB-ACCESS-PASSPHRASE", passphrase);
-        req.set("Content-Type", "application/json");
-        req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+        if (body.length() != 0) {
+            req.body() = body;
+            req.prepare_payload();
+        }
 
         http::write(stream, req);
 
         beast::flat_buffer buffer;
 
-        http::response <http::dynamic_body> res;
+        http::response<http::dynamic_body> res;
 
         http::read(stream, buffer, res);
+
+        std::cout << res.result_int() << std::endl;
+        if (res.result_int() == 400 || res.result_int() == 404) {
+            pt::ptree failResp;
+            failResp.put("error", true);
+            return failResp;
+        }
 
         std::stringstream ss;
         ss << std::string(boost::asio::buffers_begin(res.body().data()),
@@ -102,10 +127,15 @@ HttpClient::makeRequest(const std::string &target, const std::string &body, Http
 
         // determine if IP whitelist is configured correctly
         auto msg = resp.get_optional<std::string>("message");
-        if (msg && msg.value() == "IP does not match IP whitelist") {
-            std::cerr << "Coinbase Connectivity Error: IP does not match IP whitelist. See README for details"
-                      << std::endl;
-            exit(EXIT_FAILURE);
+        if (msg) {
+            if (msg.value() == "invalid signature") {
+                std::cerr << "Coinbase Connectivity Error: Unknown exception" << std::endl;
+                exit(EXIT_FAILURE);
+            } else if (msg.value() == "IP does not match IP whitelist") {
+                std::cerr << "Coinbase Connectivity Error: IP does not match IP whitelist. See README for details"
+                          << std::endl;
+                exit(EXIT_FAILURE);
+            }
         }
 
         beast::error_code ec;
@@ -115,7 +145,7 @@ HttpClient::makeRequest(const std::string &target, const std::string &body, Http
     }
     catch (std::exception const &e) {
         std::cerr << "Error: " << e.what() << std::endl;
-        return {};
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -128,7 +158,7 @@ pt::ptree
 HttpClient::makeRequest(const std::string &target) {
     try {
 
-        beast::ssl_stream <beast::tcp_stream> stream(*ioc, *ctx);
+        beast::ssl_stream<beast::tcp_stream> stream(*ioc, *ctx);
 
         auto const host = mode ? "api.pro.coinbase.com" : "api-public.sandbox.pro.coinbase.com";
 
@@ -140,7 +170,7 @@ HttpClient::makeRequest(const std::string &target) {
 
         stream.handshake(ssl::stream_base::client);
 
-        http::request <http::string_body> req{http::verb::get, target, version};
+        http::request<http::string_body> req{http::verb::get, target, version};
         req.set(http::field::host, host);
         req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 
@@ -148,7 +178,7 @@ HttpClient::makeRequest(const std::string &target) {
 
         beast::flat_buffer buffer;
 
-        http::response <http::dynamic_body> res;
+        http::response<http::dynamic_body> res;
 
         http::read(stream, buffer, res);
 
@@ -170,4 +200,3 @@ HttpClient::makeRequest(const std::string &target) {
         return {};
     }
 }
-

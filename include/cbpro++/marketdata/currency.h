@@ -40,6 +40,15 @@ namespace responses {
 
         [[nodiscard]] std::string getCryptoTransactionLink() const;
 
+        [[nodiscard]] std::string getDisplayName() const;
+
+        [[nodiscard]] long getProcessingTime() const;
+
+        [[nodiscard]] long minWithdrawalAmount() const;
+
+        [[nodiscard]] long maxWithdrawalAmount() const;
+
+
     private:
         pt::ptree data;
     };
