@@ -43,12 +43,16 @@ recommended that you familiarize yourself with the [Coinbase Pro API documentati
 * Numeric values as strings. Throughout the library, you may notice that certain values that one would anticipate to be a numeric type (e.g., double, long) are represented as strings. Although this may seem like an inconvenience, [Coinbase](https://docs.pro.coinbase.com/#types) recommends using strings to maintain precision when sending requests. Additionally, numeric values are returned as strings from coinbase. Since it is a trivial matter to convert strings to numeric types using standard library functions (e.g., std::stod for string to double) and vice versa, this is left to the user. 
 
 ## Features
+- [x] Orders: place market and limit order
+- [x] Orders: order cancellation 
+- [x] Orders: order management   
 - [x] Market data: product(s) retrieval
 - [x] Market data: order book retrieval  
 - [x] Market data: ticker retrieval 
 - [x] Market data: trade retrieval
 - [x] Market data: 24 hr stats
 - [x] Market data: currency + currencies retrieval
+- [x] Accounts 
 - [ ] Market data: historical stats    
 - [ ] WebSocket support
 
