@@ -31,7 +31,7 @@ Remark: The latter two CMake variables are only necessary if the two respective 
 To use the library:
 ```
 find_package(cbpro++ REQUIRED)
-target_link_libraries(<YOUR_EXECUTABLE> PRIVATE cbpro++::cbpro++)
+target_link_libraries(<YOUR_EXECUTABLE> PUBLIC cbpro++::cbpro++)
 ```
 
 ## Usage 
