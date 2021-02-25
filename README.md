@@ -53,8 +53,9 @@ recommended that you familiarize yourself with the [Coinbase Pro API documentati
 - [ ] WebSocket support
 
 ## Misc
+- [ ] Improve error handling 
 - [ ] Investigate moving from property tree to actual json parser 
-- [ ] Implement advanced error handling
+
 
 ## Contributors 
 * [BBottoml](https://github.com/BBottoml) (Principal maintainer)
