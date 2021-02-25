@@ -18,9 +18,8 @@ source_group("Header Files\\cbpro++\\orders" FILES ${cbpro++_ORDERS_HEADERS})
 
 set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS} ${cbpro++_ACCOUNTS_HEADERS} ${cbpro++_ORDERS_HEADERS})
 
-
 # dependency handling
-set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS} ${cbpro++_ACCOUNTS_HEADERS} ${cbpro++_ORDERS_HEADERS} src/orders/order.cpp include/cbpro++/orders/order.h include/cbpro++/orders/options.h src/orders/options.cpp)
+set(cbpro++_PUBLIC_HEADERS ${cbpro++_TOP_HEADERS} ${cbpro++_MDATA_HEADERS} ${cbpro++_ACCOUNTS_HEADERS} ${cbpro++_ORDERS_HEADERS})
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/install)
 set(OPENSSL_USE_STATIC_LIBS TRUE)
 set(Boost_USE_STATIC_LIBS OFF)

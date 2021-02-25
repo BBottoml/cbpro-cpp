@@ -8,7 +8,7 @@
 #include <string>
 #include <memory>
 
-#include "../../src/util/httpclient.h"
+#include <cbpro++/util/httpclient.h>
 
 class Auth {
 public:

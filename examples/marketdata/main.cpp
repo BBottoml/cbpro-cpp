@@ -1,5 +1,5 @@
 #include <iostream> 
-#include <cbpro++/Auth.h> 
+#include <cbpro++/auth.h> 
 #include <cbpro++/marketdata/products.h> 
 
 int main() {
