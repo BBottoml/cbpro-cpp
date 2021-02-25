@@ -6,6 +6,7 @@ To get started, there are only a handful of header files you need to familarize 
 * cbpro++/accounts/accounts.h
 * cbpro++/orders/orders.h
 * cbpro++/Auth.h
+
 (As the library expands and covers more functionality, there may be additional headers). 
 
 When you make a request, typically an object (or a vector of objects) encapsulating the Coinbase response is returned. You don't need to 
