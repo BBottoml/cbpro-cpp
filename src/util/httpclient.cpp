@@ -36,10 +36,10 @@ pt::ptree
 HttpClient::makeRequest(const std::string &target, const std::string &body, HttpClient::RequestVerb rv) {
     http::verb boostVerb;
     std::string messageVerb;
-    if (rv == HttpClient::RequestVerb::GET) {
+    if (rv == HttpClient::RequestVerb::E_GET) {
         messageVerb = "GET";
         boostVerb = http::verb::get;
-    } else if (rv == HttpClient::RequestVerb::POST) {
+    } else if (rv == HttpClient::RequestVerb::E_POST) {
         messageVerb = "POST";
         boostVerb = http::verb::post;
     } else {

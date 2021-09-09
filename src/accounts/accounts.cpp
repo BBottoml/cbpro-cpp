@@ -10,7 +10,7 @@ namespace accounts {
         std::string target = "/accounts/";
         target += accountId;
         target += "/ledger";
-        auto resp = httpClient->makeRequest(target, "", HttpClient::RequestVerb::GET);
+        auto resp = httpClient->makeRequest(target, "", HttpClient::RequestVerb::E_GET);
 
         std::vector<responses::entry> entries;
         for (const auto &item : resp) {
@@ -25,7 +25,7 @@ namespace accounts {
         const auto &httpClient = auth.getHttpClientPtr();
 
         std::string target = "/accounts";
-        auto resp = httpClient->makeRequest(target, "", HttpClient::RequestVerb::GET);
+        auto resp = httpClient->makeRequest(target, "", HttpClient::RequestVerb::E_GET);
 
         std::vector<responses::account> accounts;
         for (const auto &item : resp) {
@@ -40,7 +40,7 @@ namespace accounts {
         const auto &httpClient = auth.getHttpClientPtr();
         std::string target = "/accounts/";
         target += accountId;
-        auto resp = httpClient->makeRequest(target, "", HttpClient::RequestVerb::GET);
+        auto resp = httpClient->makeRequest(target, "", HttpClient::RequestVerb::E_GET);
 
         responses::account account(resp);
         return account;
@@ -52,7 +52,7 @@ namespace accounts {
         std::string target = "/accounts/";
         target += accountId;
         target += "/holds";
-        auto resp = httpClient->makeRequest(target, "", HttpClient::RequestVerb::GET);
+        auto resp = httpClient->makeRequest(target, "", HttpClient::RequestVerb::E_GET);
 
         std::vector<responses::hold> holds;
         for (const auto &item : resp) {
